@@ -7,5 +7,6 @@ export class InsereExtensoesNecessarias1660249452980
     await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public async down(): Promise<void> {}
 }
