@@ -4,19 +4,19 @@ import { DefaultMessages } from '../types/DefaultMessages';
 export const tratamentoErroPadrao = (error: any) => {
   if (
     error.status == 400 &&
-    error.response.hasOwnProperty('error') &&
-    error.response.hasOwnProperty('data') &&
-    error.response.hasOwnProperty('message')
+    error?.response?.hasOwnProperty('error') &&
+    error?.response?.hasOwnProperty('data') &&
+    error?.response?.hasOwnProperty('message')
   ) {
     throw new HttpException(
       {
         error: true,
-        message: error.response.message,
+        message: error?.response?.message,
         data: null,
       },
       HttpStatus.BAD_REQUEST,
     );
-  } else if (error.response.message == DefaultMessages.DATA_NOT_FOUND) {
+  } else if (error?.response?.message == DefaultMessages.DATA_NOT_FOUND) {
     throw new HttpException(
       {
         error: true,
@@ -26,13 +26,12 @@ export const tratamentoErroPadrao = (error: any) => {
       HttpStatus.NOT_FOUND,
     );
   } else {
+    // eslint-disable-next-line no-console
+    console.log(error);
     throw new HttpException(
       {
         error: true,
-        message:
-          process.env.NODE_ENV == 'production'
-            ? DefaultMessages.UNKNOWN_ERROR
-            : error.message,
+        message: DefaultMessages.UNKNOWN_ERROR,
         data: null,
       },
       HttpStatus.INTERNAL_SERVER_ERROR,

@@ -9,4 +9,6 @@ export enum DefaultMessages {
   INVALID_EMAIL_FORMAT = 'Envie um e-mail num formato válido',
   ID_PARAM_REQUIRED = 'Parâmetro id é obrigatório',
   DATA_NOT_FOUND = 'Recurso não encontrado',
+  DELETED = 'Deletado com sucesso.',
+  UPDATED = 'Atualizado com sucesso.',
 }

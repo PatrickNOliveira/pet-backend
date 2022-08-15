@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { EmpresaService } from './empresa.service';
 import { tratamentoErroPadrao } from '../../common/utils/tratamentoErroPadrao';
 import { FindAllParams } from '../../common/types/FindAllParams';
@@ -7,6 +16,7 @@ import { IResponsePadrao } from '../../common/types/ResponsePadrao';
 import { Empresa } from './empresa.entity';
 import { CreateEmpresaDto } from './dto/create.empresa.dto';
 import { GetOneDto } from '../../common/validators/get.one.dto';
+import { UpdateEmpresaDto } from './dto/update.empresa.dto';
 
 @Controller('empresa')
 export class EmpresaController {
@@ -49,6 +59,30 @@ export class EmpresaController {
   async show(@Param() params: GetOneDto): Promise<IResponsePadrao<Empresa>> {
     try {
       return await this.empresaService.show(params.id);
+    } catch (e) {
+      tratamentoErroPadrao(e);
+    }
+  }
+
+  @Delete(':id')
+  async destroy(@Param() params: GetOneDto): Promise<IResponsePadrao<Empresa>> {
+    try {
+      return await this.empresaService.destroy({ id: params.id });
+    } catch (e) {
+      tratamentoErroPadrao(e);
+    }
+  }
+
+  @Put(':id')
+  async update(
+    @Param() params: GetOneDto,
+    @Body() body: UpdateEmpresaDto,
+  ): Promise<IResponsePadrao<Empresa>> {
+    try {
+      return await this.empresaService.update({
+        condition: { id: params.id },
+        body,
+      });
     } catch (e) {
       tratamentoErroPadrao(e);
     }

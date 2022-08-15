@@ -6,6 +6,9 @@ import { Brackets } from 'typeorm/query-builder/Brackets';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 import { EntityFieldsNames } from 'typeorm/common/EntityFieldsNames';
 import { v4 as uuid } from 'uuid';
+import { ObjectID } from 'typeorm/driver/mongodb/typings';
+import { FindConditions } from 'typeorm/find-options/FindConditions';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
 export class ServiceBase<T> {
@@ -55,12 +58,33 @@ export class ServiceBase<T> {
   }
 
   async show(id: string): Promise<IResponsePadrao<T>> {
+    await this.validateExists(id);
     const data = await this.repository.findOne({ where: { id } });
-    if (data) {
+    return {
+      error: false,
+      message: [DefaultMessages.QUERY_SUCCESS],
+      data,
+    };
+  }
+
+  async destroy(
+    condition:
+      | string
+      | string[]
+      | number
+      | number[]
+      | Date
+      | Date[]
+      | ObjectID
+      | ObjectID[]
+      | FindConditions<T>,
+  ): Promise<IResponsePadrao<T>> {
+    const result = await this.repository.delete(condition);
+    if (result.affected > 0) {
       return {
         error: false,
-        message: [DefaultMessages.QUERY_SUCCESS],
-        data,
+        message: [DefaultMessages.DELETED],
+        data: null,
       };
     }
     throw new HttpException(
@@ -71,5 +95,53 @@ export class ServiceBase<T> {
       },
       HttpStatus.NOT_FOUND,
     );
+  }
+
+  async update(input: {
+    condition:
+      | string
+      | string[]
+      | number
+      | number[]
+      | Date
+      | Date[]
+      | ObjectID
+      | ObjectID[]
+      | FindConditions<T>;
+    body: QueryDeepPartialEntity<T>;
+  }): Promise<IResponsePadrao<T>> {
+    const result = await this.repository.update(input.condition, input.body);
+    if (result.affected > 0) {
+      const data = await this.repository.findOne({
+        where: input.condition as any,
+      });
+      return {
+        error: false,
+        message: [DefaultMessages.UPDATED],
+        data: data,
+      };
+    }
+    throw new HttpException(
+      {
+        error: true,
+        message: [DefaultMessages.DATA_NOT_FOUND],
+        data: null,
+      },
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
+  protected async validateExists(id: string): Promise<void> {
+    const data = await this.repository.findOne({ where: { id } });
+    if (!data) {
+      throw new HttpException(
+        {
+          error: true,
+          message: [DefaultMessages.DATA_NOT_FOUND],
+          data: null,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
 }
