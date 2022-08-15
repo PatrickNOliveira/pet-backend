@@ -39,6 +39,8 @@ export class Empresa {
   @Column({ length: 254 })
   statusAptidaoFinal?: string;
 
-  @OneToMany(() => Usuario, (usuario) => usuario.empresaGestorSGS)
-  usuarioGestorSGS: Usuario[];
+  @OneToMany(() => Usuario, (usuario) => usuario.empresaGestorSGS, {
+    nullable: true,
+  })
+  usuarioGestorSGS?: Usuario[];
 }

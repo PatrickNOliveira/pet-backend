@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { EmpresaService } from './empresa.service';
+import { tratamentoErroPadrao } from '../../common/utils/tratamentoErroPadrao';
 
 @Controller('empresa')
 export class EmpresaController {
@@ -8,10 +9,12 @@ export class EmpresaController {
   @Get()
   async getAll(): Promise<any> {
     try {
-      return await this.empresaService.getAll();
+      return await this.empresaService.getAll({
+        take: 2,
+        page: 1,
+      });
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+      tratamentoErroPadrao(e);
     }
   }
 }

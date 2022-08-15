@@ -1,8 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { EscopoUsuario } from '../../common/types/EscopoUsuario';
 import { Empresa } from '../empresa/empresa.entity';
 
-@Entity()
+@Entity('Usuarios')
 export class Usuario {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -31,6 +37,9 @@ export class Usuario {
   @Column({ length: 254 })
   refreshToken: string;
 
-  @ManyToOne(() => Empresa, (empresa) => empresa.usuarioGestorSGS)
-  empresaGestorSGS: Empresa;
+  @ManyToOne(() => Empresa, (empresa) => empresa.usuarioGestorSGS, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'empresaId' })
+  empresaGestorSGS?: Empresa;
 }
