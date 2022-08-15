@@ -35,7 +35,7 @@ export class ServiceBase<T> {
     });
     return {
       error: false,
-      message: DefaultMessages.QUERY_SUCCESS,
+      message: [DefaultMessages.QUERY_SUCCESS],
       data,
     };
   }

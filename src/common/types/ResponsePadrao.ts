@@ -1,5 +1,5 @@
 export interface IResponsePadrao<T> {
   error: boolean;
-  message: string;
+  message: string[];
   data: T;
 }
