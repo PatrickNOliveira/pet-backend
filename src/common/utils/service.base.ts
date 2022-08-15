@@ -44,7 +44,22 @@ export class ServiceBase<T> {
     };
   }
 
-  async store(body: Partial<T>): Promise<IResponsePadrao<T>> {
+  async store(
+    body: Partial<T>,
+    validateUnique?: boolean,
+    validateUniqueValues?: {
+      value: any;
+      columnName: string;
+    }[],
+  ): Promise<IResponsePadrao<T>> {
+    if (validateUnique) {
+      for (const item of validateUniqueValues) {
+        await this.validateUnique({
+          value: item?.value,
+          columnName: item?.columnName,
+        });
+      }
+    }
     (body as any).id = uuid();
     await this.repository.insert(body as T);
     const data = await this.repository.findOne({
@@ -141,6 +156,22 @@ export class ServiceBase<T> {
           data: null,
         },
         HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+
+  protected async validateUnique(input: { value: any; columnName: string }) {
+    const response = await this.repository.findOne({
+      where: { [input.columnName]: input.value },
+    });
+    if (response) {
+      throw new HttpException(
+        {
+          error: true,
+          message: [`${input.columnName} já está sendo utilizado`],
+          data: null,
+        },
+        HttpStatus.BAD_REQUEST,
       );
     }
   }

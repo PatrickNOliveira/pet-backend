@@ -25,7 +25,7 @@ export class Usuario {
   @Column({ length: 254 })
   login: string;
 
-  @Column({ length: 254 })
+  @Column({ length: 254, select: false })
   senha: string;
 
   @Column({
@@ -34,8 +34,8 @@ export class Usuario {
   })
   escopo: EscopoUsuario;
 
-  @Column({ length: 254 })
-  refreshToken: string;
+  @Column({ length: 254, nullable: true })
+  refreshToken?: string;
 
   @ManyToOne(() => Empresa, (empresa) => empresa.usuarioGestorSGS, {
     nullable: true,
