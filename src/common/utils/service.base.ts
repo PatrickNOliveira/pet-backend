@@ -124,7 +124,22 @@ export class ServiceBase<T> {
       | ObjectID[]
       | FindConditions<T>;
     body: QueryDeepPartialEntity<T>;
+    validateUnique?: boolean;
+    validateUniqueValues?: {
+      value: any;
+      columnName: string;
+    }[];
   }): Promise<IResponsePadrao<T>> {
+    const { validateUnique, validateUniqueValues } = input;
+    if (validateUnique) {
+      for (const item of validateUniqueValues) {
+        await this.validateUnique({
+          value: item?.value,
+          columnName: item?.columnName,
+          updating: true,
+        });
+      }
+    }
     const result = await this.repository.update(input.condition, input.body);
     if (result.affected > 0) {
       const data = await this.repository.findOne({
@@ -160,19 +175,50 @@ export class ServiceBase<T> {
     }
   }
 
-  protected async validateUnique(input: { value: any; columnName: string }) {
-    const response = await this.repository.findOne({
-      where: { [input.columnName]: input.value },
-    });
-    if (response) {
-      throw new HttpException(
-        {
-          error: true,
-          message: [`${input.columnName} já está sendo utilizado`],
-          data: null,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+  protected async validateUnique(input: {
+    value: any;
+    columnName: string;
+    updating?: boolean;
+    condition?:
+      | string
+      | string[]
+      | number
+      | number[]
+      | Date
+      | Date[]
+      | ObjectID
+      | ObjectID[]
+      | FindConditions<T>;
+  }) {
+    if (input.updating) {
+      const original = await this.repository.findOne(input.condition as any);
+      const response = await this.repository.findOne({
+        where: { [input.columnName]: input.value },
+      });
+      if (response && (response as any).id != (original as any).id) {
+        throw new HttpException(
+          {
+            error: true,
+            message: [`${input.columnName} já está sendo utilizado`],
+            data: null,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    } else {
+      const response = await this.repository.findOne({
+        where: { [input.columnName]: input.value },
+      });
+      if (response) {
+        throw new HttpException(
+          {
+            error: true,
+            message: [`${input.columnName} já está sendo utilizado`],
+            data: null,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
     }
   }
 }

@@ -37,6 +37,9 @@ export class Usuario {
   @Column({ length: 254, nullable: true })
   refreshToken?: string;
 
+  @Column({ default: true })
+  active: boolean;
+
   @ManyToOne(() => Empresa, (empresa) => empresa.usuarioGestorSGS, {
     nullable: true,
   })

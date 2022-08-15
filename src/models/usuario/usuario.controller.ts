@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { FindAllParams } from '../../common/types/FindAllParams';
 import { IResponsePadrao } from '../../common/types/ResponsePadrao';
@@ -8,6 +17,7 @@ import { Usuario } from './usuario.entity';
 import { GetOneDto } from '../../common/validators/get.one.dto';
 import { CreateUsuarioDto } from './dto/create.usuario.dto';
 import * as argon2 from 'argon2';
+import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 
 @Controller('usuario')
 export class UsuarioController {
@@ -24,8 +34,11 @@ export class UsuarioController {
         where: query.search
           ? {
               nome: Like(`${query.search}%`),
+              active: true,
             }
-          : undefined,
+          : {
+              active: true,
+            },
         order: {
           nome: 'ASC',
         },
@@ -60,6 +73,74 @@ export class UsuarioController {
           columnName: 'login',
         },
       ]);
+    } catch (e) {
+      tratamentoErroPadrao(e);
+    }
+  }
+
+  @Patch(':id/desativar')
+  async disable(@Param() params: GetOneDto): Promise<IResponsePadrao<Usuario>> {
+    try {
+      const response = await this.usuarioService.update({
+        condition: {
+          id: params.id,
+        },
+        body: {
+          active: false,
+        },
+      });
+      return {
+        ...response,
+        message: ['Desativado com sucesso.'],
+      };
+    } catch (e) {
+      tratamentoErroPadrao(e);
+    }
+  }
+
+  @Patch(':id/reativar')
+  async enable(@Param() params: GetOneDto): Promise<IResponsePadrao<Usuario>> {
+    try {
+      const response = await this.usuarioService.update({
+        condition: {
+          id: params.id,
+        },
+        body: {
+          active: true,
+        },
+      });
+      return {
+        ...response,
+        message: ['Reativado com sucesso.'],
+      };
+    } catch (e) {
+      tratamentoErroPadrao(e);
+    }
+  }
+
+  @Put(':id')
+  async update(
+    @Param() params: GetOneDto,
+    @Body() body: UpdateUsuarioDto,
+  ): Promise<IResponsePadrao<Usuario>> {
+    try {
+      return await this.usuarioService.update({
+        condition: {
+          id: params.id,
+        },
+        body,
+        validateUnique: true,
+        validateUniqueValues: [
+          {
+            value: body.email,
+            columnName: 'email',
+          },
+          {
+            value: body.login,
+            columnName: 'login',
+          },
+        ],
+      });
     } catch (e) {
       tratamentoErroPadrao(e);
     }

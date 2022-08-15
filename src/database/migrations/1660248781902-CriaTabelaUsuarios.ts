@@ -59,6 +59,12 @@ export class CriaTabelaUsuarios1660248781902 implements MigrationInterface {
             type: 'uuid',
             isNullable: true,
           },
+          {
+            name: 'active',
+            type: 'boolean',
+            isNullable: false,
+            default: true,
+          },
         ],
       }),
       true,
