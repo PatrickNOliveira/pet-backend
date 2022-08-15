@@ -32,7 +32,7 @@ export class CriaTabelaEmpresas1660248366369 implements MigrationInterface {
             name: 'estado',
             type: 'varchar',
             isNullable: false,
-            length: '2',
+            length: '11',
           },
           {
             name: 'pais',
@@ -53,7 +53,7 @@ export class CriaTabelaEmpresas1660248366369 implements MigrationInterface {
             name: 'telefone',
             type: 'varchar',
             isNullable: false,
-            length: '10',
+            length: '11',
           },
           {
             name: 'email',

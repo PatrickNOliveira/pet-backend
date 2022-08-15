@@ -1,10 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+} from 'typeorm';
 import { Usuario } from '../usuario/usuario.entity';
 
 @Entity('Empresas')
 export class Empresa {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @Column({ length: 254 })
   nome: string;

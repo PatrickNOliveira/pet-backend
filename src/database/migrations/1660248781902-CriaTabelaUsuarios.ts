@@ -27,7 +27,7 @@ export class CriaTabelaUsuarios1660248781902 implements MigrationInterface {
             name: 'telefone',
             type: 'varchar',
             isNullable: false,
-            length: '10',
+            length: '11',
           },
           {
             name: 'email',

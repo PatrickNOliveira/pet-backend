@@ -5,6 +5,7 @@ import { DefaultMessages } from '../types/DefaultMessages';
 import { Brackets } from 'typeorm/query-builder/Brackets';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 import { EntityFieldsNames } from 'typeorm/common/EntityFieldsNames';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class ServiceBase<T> {
@@ -36,6 +37,19 @@ export class ServiceBase<T> {
     return {
       error: false,
       message: [DefaultMessages.QUERY_SUCCESS],
+      data,
+    };
+  }
+
+  async store(body: Partial<T>): Promise<IResponsePadrao<T>> {
+    (body as any).id = uuid();
+    await this.repository.insert(body as T);
+    const data = await this.repository.findOne({
+      where: { id: (body as any).id },
+    });
+    return {
+      error: false,
+      message: [DefaultMessages.CREATED],
       data,
     };
   }
