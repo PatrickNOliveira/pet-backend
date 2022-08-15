@@ -67,7 +67,7 @@ export class CriaTabelaUsuarios1660248781902 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'Usuarios',
       new TableForeignKey({
-        columnNames: ['EmpresaId'],
+        columnNames: ['empresaId'],
         referencedColumnNames: ['id'],
         referencedTableName: 'Empresas',
       }),
@@ -77,7 +77,7 @@ export class CriaTabelaUsuarios1660248781902 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     const table = await queryRunner.getTable('Usuarios');
     const foreignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('EmpresaId') !== -1,
+      (fk) => fk.columnNames.indexOf('empresaId') !== -1,
     );
     await queryRunner.dropForeignKey('Usuarios', foreignKey);
     await queryRunner.dropTable('Usuarios');

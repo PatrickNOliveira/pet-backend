@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { EscopoUsuario } from '../../common/types/EscopoUsuario';
+import { Empresa } from '../empresa/empresa.entity';
 
 @Entity()
 export class Usuario {
@@ -29,4 +30,7 @@ export class Usuario {
 
   @Column({ length: 254 })
   refreshToken: string;
+
+  @ManyToOne(() => Empresa, (empresa) => empresa.usuarioGestorSGS)
+  empresaGestorSGS: Empresa;
 }
