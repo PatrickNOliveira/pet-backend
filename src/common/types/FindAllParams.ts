@@ -1,7 +1,11 @@
 import { IsNumber, IsOptional, Min } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class FindAllParams {
+  @ApiProperty({
+    required: false,
+  })
   @IsOptional()
   @IsNumber(
     {},
@@ -13,6 +17,9 @@ export class FindAllParams {
   @Type(() => Number)
   take?: number;
 
+  @ApiProperty({
+    required: false,
+  })
   @IsOptional()
   @IsNumber(
     {},
@@ -24,6 +31,9 @@ export class FindAllParams {
   @Type(() => Number)
   page?: number;
 
+  @ApiProperty({
+    required: false,
+  })
   @IsOptional()
   search?: string;
 }

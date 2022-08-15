@@ -9,8 +9,10 @@ import {
   Length,
 } from 'class-validator';
 import { DefaultMessages } from '../../../common/types/DefaultMessages';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateEmpresaDto {
+  @ApiProperty()
   @IsNotEmpty({
     message: DefaultMessages.NAME_REQUIRED,
   })
@@ -22,6 +24,7 @@ export class CreateEmpresaDto {
   })
   nome: string;
 
+  @ApiProperty()
   @IsNotEmpty({
     message: 'Campo endereco é obrigatório',
   })
@@ -33,6 +36,7 @@ export class CreateEmpresaDto {
   })
   endereco: string;
 
+  @ApiProperty()
   @IsNotEmpty({
     message: 'Campo cidade é obrigatório',
   })
@@ -44,6 +48,7 @@ export class CreateEmpresaDto {
   })
   cidade: string;
 
+  @ApiProperty()
   @IsNotEmpty({
     message: 'Campo estado é obrigatório',
   })
@@ -88,6 +93,7 @@ export class CreateEmpresaDto {
   )
   estado: string;
 
+  @ApiProperty()
   @IsNotEmpty({
     message: 'Campo pais é obrigatório',
   })
@@ -99,6 +105,7 @@ export class CreateEmpresaDto {
   })
   pais: string;
 
+  @ApiProperty()
   @IsNotEmpty({
     message: 'Campo polo é obrigatório',
   })
@@ -110,6 +117,7 @@ export class CreateEmpresaDto {
   })
   polo: string;
 
+  @ApiProperty()
   @IsNotEmpty({
     message: 'Campo responsavel é obrigatório',
   })
@@ -121,6 +129,7 @@ export class CreateEmpresaDto {
   })
   responsavel: string;
 
+  @ApiProperty()
   @IsNotEmpty({
     message: 'Campo telefone é obrigatório',
   })
@@ -132,6 +141,7 @@ export class CreateEmpresaDto {
   })
   telefone: string;
 
+  @ApiProperty()
   @IsNotEmpty({
     message: 'Campo email é obrigatório',
   })
@@ -154,6 +164,9 @@ export class CreateEmpresaDto {
   })
   statusAptidaoFinal?: string;
 
+  @ApiProperty({
+    required: false,
+  })
   @IsOptional()
   @IsString({
     message: 'Campo outrasNormasTenicas deve ser uma string',
