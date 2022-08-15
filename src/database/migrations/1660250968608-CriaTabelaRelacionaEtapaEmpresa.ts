@@ -21,12 +21,12 @@ export class CriaTabelaRelacionaEtapaEmpresa1660250968608
             generationStrategy: 'uuid',
           },
           {
-            name: 'EmpresaId',
+            name: 'empresaId',
             type: 'uuid',
             isNullable: true,
           },
           {
-            name: 'EtapaId',
+            name: 'etapaId',
             type: 'uuid',
             isNullable: true,
           },
@@ -37,7 +37,7 @@ export class CriaTabelaRelacionaEtapaEmpresa1660250968608
     await queryRunner.createForeignKey(
       'RelacionaEtapaEmpresa',
       new TableForeignKey({
-        columnNames: ['EmpresaId'],
+        columnNames: ['empresaId'],
         referencedColumnNames: ['id'],
         referencedTableName: 'Empresas',
       }),
@@ -45,7 +45,7 @@ export class CriaTabelaRelacionaEtapaEmpresa1660250968608
     await queryRunner.createForeignKey(
       'RelacionaEtapaEmpresa',
       new TableForeignKey({
-        columnNames: ['EtapaId'],
+        columnNames: ['etapaId'],
         referencedColumnNames: ['id'],
         referencedTableName: 'EtapasSGS',
       }),
@@ -56,8 +56,8 @@ export class CriaTabelaRelacionaEtapaEmpresa1660250968608
     const table = await queryRunner.getTable('RelacionaEtapaEmpresa');
     const foreignKey = table.foreignKeys.filter(
       (fk) =>
-        fk.columnNames.indexOf('EmpresaId') !== -1 ||
-        fk.columnNames.indexOf('EtapaId') !== -1,
+        fk.columnNames.indexOf('empresaId') !== -1 ||
+        fk.columnNames.indexOf('etapaId') !== -1,
     );
     for (let i = 0; i < foreignKey.length; i++) {
       await queryRunner.dropForeignKey('RelacionaEtapaEmpresa', foreignKey[i]);
