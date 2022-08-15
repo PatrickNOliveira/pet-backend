@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { EmpresaService } from './empresa.service';
 import { tratamentoErroPadrao } from '../../common/utils/tratamentoErroPadrao';
 import { FindAllParams } from '../../common/types/FindAllParams';
@@ -6,6 +6,7 @@ import { Like } from 'typeorm';
 import { IResponsePadrao } from '../../common/types/ResponsePadrao';
 import { Empresa } from './empresa.entity';
 import { CreateEmpresaDto } from './dto/create.empresa.dto';
+import { GetOneDto } from '../../common/validators/get.one.dto';
 
 @Controller('empresa')
 export class EmpresaController {
@@ -39,6 +40,15 @@ export class EmpresaController {
   ): Promise<IResponsePadrao<Empresa>> {
     try {
       return await this.empresaService.store(body);
+    } catch (e) {
+      tratamentoErroPadrao(e);
+    }
+  }
+
+  @Get(':id')
+  async show(@Param() params: GetOneDto): Promise<IResponsePadrao<Empresa>> {
+    try {
+      return await this.empresaService.show(params.id);
     } catch (e) {
       tratamentoErroPadrao(e);
     }

@@ -11,10 +11,19 @@ export const tratamentoErroPadrao = (error: any) => {
     throw new HttpException(
       {
         error: true,
-        message: error.message,
+        message: error.response.message,
         data: null,
       },
       HttpStatus.BAD_REQUEST,
+    );
+  } else if (error.response.message == DefaultMessages.DATA_NOT_FOUND) {
+    throw new HttpException(
+      {
+        error: true,
+        message: DefaultMessages.DATA_NOT_FOUND,
+        data: null,
+      },
+      HttpStatus.NOT_FOUND,
     );
   } else {
     throw new HttpException(

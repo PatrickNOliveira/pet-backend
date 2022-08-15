@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { IResponsePadrao } from '../types/ResponsePadrao';
 import { DefaultMessages } from '../types/DefaultMessages';
@@ -52,5 +52,24 @@ export class ServiceBase<T> {
       message: [DefaultMessages.CREATED],
       data,
     };
+  }
+
+  async show(id: string): Promise<IResponsePadrao<T>> {
+    const data = await this.repository.findOne({ where: { id } });
+    if (data) {
+      return {
+        error: false,
+        message: [DefaultMessages.QUERY_SUCCESS],
+        data,
+      };
+    }
+    throw new HttpException(
+      {
+        error: true,
+        message: [DefaultMessages.DATA_NOT_FOUND],
+        data: null,
+      },
+      HttpStatus.NOT_FOUND,
+    );
   }
 }

@@ -7,4 +7,6 @@ export enum DefaultMessages {
   NAME_LENGTH = 'Campo nome deve ter no máximo 254 caraceters',
   INVALID_PHONE_FORMAT = 'Campo telefone deve respeitar o formato 99999999999 sem máscaras e afins',
   INVALID_EMAIL_FORMAT = 'Envie um e-mail num formato válido',
+  ID_PARAM_REQUIRED = 'Parâmetro id é obrigatório',
+  DATA_NOT_FOUND = 'Recurso não encontrado',
 }
