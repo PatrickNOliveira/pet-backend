@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -18,10 +20,15 @@ import { GetOneDto } from '../../common/validators/get.one.dto';
 import { CreateUsuarioDto } from './dto/create.usuario.dto';
 import * as argon2 from 'argon2';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
+import { EscopoUsuario } from '../../common/types/EscopoUsuario';
+import { EmpresaService } from '../empresa/empresa.service';
 
 @Controller('usuario')
 export class UsuarioController {
-  constructor(private readonly usuarioService: UsuarioService) {}
+  constructor(
+    private readonly usuarioService: UsuarioService,
+    private readonly empresaService: EmpresaService,
+  ) {}
 
   @Get()
   async getAll(
@@ -63,16 +70,37 @@ export class UsuarioController {
   ): Promise<IResponsePadrao<Usuario>> {
     try {
       body.senha = await argon2.hash(body.senha);
-      return await this.usuarioService.store(body, true, [
-        {
-          value: body.email,
-          columnName: 'email',
-        },
-        {
-          value: body.login,
-          columnName: 'login',
-        },
-      ]);
+      if (body.escopo !== EscopoUsuario.GESTOR && body.empresaId) {
+        throw new HttpException(
+          {
+            error: true,
+            message: `Apenas usuários do tipo ${EscopoUsuario.GESTOR} podem ter um empresaId`,
+            data: null,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      return await this.usuarioService.store(
+        body,
+        true,
+        [
+          {
+            value: body.email,
+            columnName: 'email',
+          },
+          {
+            value: body.login,
+            columnName: 'login',
+          },
+        ],
+        !!body.empresaId,
+        [
+          {
+            value: body.empresaId,
+            service: this.empresaService,
+          },
+        ],
+      );
     } catch (e) {
       tratamentoErroPadrao(e);
     }

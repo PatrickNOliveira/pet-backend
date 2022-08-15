@@ -51,7 +51,29 @@ export class ServiceBase<T> {
       value: any;
       columnName: string;
     }[],
+    validateRelationship?: boolean,
+    validateRelationshipValues?: {
+      value: any;
+      service: any;
+    }[],
   ): Promise<IResponsePadrao<T>> {
+    if (validateRelationship) {
+      for (const item of validateRelationshipValues) {
+        const response = await item.service.exists(item.value);
+        if (!response) {
+          throw new HttpException(
+            {
+              error: true,
+              message: [
+                `Nenhum id com o valor ${item.value} encontrado, portanto, não foi possível realizar o relacionamento`,
+              ],
+              data: null,
+            },
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+      }
+    }
     if (validateUnique) {
       for (const item of validateUniqueValues) {
         await this.validateUnique({
@@ -220,5 +242,10 @@ export class ServiceBase<T> {
         );
       }
     }
+  }
+
+  async exists(id: string): Promise<boolean> {
+    const data = await this.repository.findOne({ where: { id } });
+    return !!data;
   }
 }

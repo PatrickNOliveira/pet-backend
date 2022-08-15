@@ -40,6 +40,9 @@ export class Usuario {
   @Column({ default: true })
   active: boolean;
 
+  @Column('uuid')
+  empresaId: string;
+
   @ManyToOne(() => Empresa, (empresa) => empresa.usuarioGestorSGS, {
     nullable: true,
   })
