@@ -17,6 +17,7 @@ export class CriaTabelaRequisitoSGS1660251126054 implements MigrationInterface {
             isPrimary: true,
             isUnique: true,
             generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'nome',

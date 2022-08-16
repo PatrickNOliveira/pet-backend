@@ -5,15 +5,17 @@ import {
   IsIn,
   IsNotEmpty,
   IsNumberString,
-  IsOptional,
   IsString,
   IsUUID,
   Length,
+  ValidateIf,
 } from 'class-validator';
 import { DefaultMessages } from '../../../common/types/DefaultMessages';
 import { EscopoUsuario } from '../../../common/types/EscopoUsuario';
 
 export class CreateUsuarioDto {
+  id?: string;
+
   @ApiProperty()
   @IsNotEmpty({
     message: DefaultMessages.NAME_REQUIRED,
@@ -104,9 +106,24 @@ export class CreateUsuarioDto {
   })
   refreshToken?: string;
 
-  @IsOptional()
+  @ApiProperty({ required: false })
+  @ValidateIf((o) => o.escopo === EscopoUsuario.GESTOR)
   @IsUUID(4, {
     message: 'empresaId deve ser um uuid',
   })
+  @IsNotEmpty({
+    message: `O campo empresaId é obrigatório para usuários com o escopo ${EscopoUsuario.GESTOR}`,
+  })
   empresaId: string;
+
+  @ApiProperty({ required: false })
+  @ValidateIf((o) => o.escopo === EscopoUsuario.CONSULTOR)
+  @IsUUID(4, {
+    message: 'empresasRelacionadas deve ser um array de uuids',
+    each: true,
+  })
+  @IsNotEmpty({
+    message: `O campo empresasRelacionadas é obrigatório para usuários com o escopo ${EscopoUsuario.CONSULTOR}`,
+  })
+  empresasRelacionadas: string[];
 }

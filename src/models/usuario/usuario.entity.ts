@@ -3,8 +3,8 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+  JoinColumn, ManyToMany, JoinTable
+} from "typeorm";
 import { EscopoUsuario } from '../../common/types/EscopoUsuario';
 import { Empresa } from '../empresa/empresa.entity';
 
@@ -48,4 +48,18 @@ export class Usuario {
   })
   @JoinColumn({ name: 'empresaId' })
   empresaGestorSGS?: Empresa;
+
+  @ManyToMany(() => Empresa)
+  @JoinTable({
+    name: 'RelacionaUsuarioEmpresa',
+    joinColumn: {
+      name: 'usuarioId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'empresaId',
+      referencedColumnName: 'id',
+    },
+  })
+  empresaConsultorSGS?: Empresa[];
 }

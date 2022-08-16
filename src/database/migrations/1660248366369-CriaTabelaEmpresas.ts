@@ -12,6 +12,7 @@ export class CriaTabelaEmpresas1660248366369 implements MigrationInterface {
             isPrimary: true,
             isUnique: true,
             generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'nome',

@@ -19,6 +19,7 @@ export class CriaTabelaRelacionaEtapaEmpresa1660250968608
             isPrimary: true,
             isUnique: true,
             generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'empresaId',

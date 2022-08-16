@@ -5,14 +5,13 @@ import { DefaultMessages } from '../types/DefaultMessages';
 import { Brackets } from 'typeorm/query-builder/Brackets';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 import { EntityFieldsNames } from 'typeorm/common/EntityFieldsNames';
-import { v4 as uuid } from 'uuid';
 import { ObjectID } from 'typeorm/driver/mongodb/typings';
 import { FindConditions } from 'typeorm/find-options/FindConditions';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
 export class ServiceBase<T> {
-  constructor(private repository: Repository<T>) {}
+  constructor(protected repository: Repository<T>) {}
 
   async getAll(input?: {
     where?:
@@ -82,7 +81,6 @@ export class ServiceBase<T> {
         });
       }
     }
-    (body as any).id = uuid();
     await this.repository.insert(body as T);
     const data = await this.repository.findOne({
       where: { id: (body as any).id },

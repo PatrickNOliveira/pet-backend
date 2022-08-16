@@ -17,6 +17,7 @@ export class CriaTabelaUsuarios1660248781902 implements MigrationInterface {
             isPrimary: true,
             isUnique: true,
             generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'nome',

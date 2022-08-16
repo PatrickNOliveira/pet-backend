@@ -7,6 +7,7 @@ import { typeOrmAsyncConfig } from './config/typeorm.config';
 import { UsuarioModule } from './models/usuario/usuario.module';
 import { EmpresaModule } from './models/empresa/empresa.module';
 import { APP_PIPE } from '@nestjs/core';
+import { RelacionaUsuarioEmpresaModule } from './models/relaciona-usuario-empresa/relaciona-usuario-empresa.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { APP_PIPE } from '@nestjs/core';
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     UsuarioModule,
     EmpresaModule,
+    RelacionaUsuarioEmpresaModule,
   ],
   controllers: [AppController],
   providers: [

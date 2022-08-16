@@ -19,6 +19,7 @@ export class CriaTabelaRelacionaUsuarioEmpresa1660250077737
             isPrimary: true,
             isUnique: true,
             generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'empresaId',

@@ -12,6 +12,7 @@ export class CriaTabelaEtapasSGS1660250823592 implements MigrationInterface {
             isPrimary: true,
             isUnique: true,
             generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'nome',
