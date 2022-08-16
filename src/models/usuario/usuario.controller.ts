@@ -17,12 +17,13 @@ import { Usuario } from './usuario.entity';
 import { GetOneDto } from '../../common/validators/get.one.dto';
 import { CreateUsuarioDto } from './dto/create.usuario.dto';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
-import { Public } from "../../auth/isPublic";
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('usuario')
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
+  @ApiBearerAuth()
   @Get()
   async getAll(
     @Query() query: FindAllParams,
@@ -48,6 +49,7 @@ export class UsuarioController {
     }
   }
 
+  @ApiBearerAuth()
   @Get(':id')
   async show(@Param() params: GetOneDto): Promise<IResponsePadrao<Usuario>> {
     try {
@@ -60,7 +62,7 @@ export class UsuarioController {
     }
   }
 
-  @Public()
+  @ApiBearerAuth()
   @Post()
   async store(
     @Body() body: CreateUsuarioDto,
@@ -72,6 +74,7 @@ export class UsuarioController {
     }
   }
 
+  @ApiBearerAuth()
   @Patch(':id/desativar')
   async disable(@Param() params: GetOneDto): Promise<IResponsePadrao<Usuario>> {
     try {
@@ -92,6 +95,7 @@ export class UsuarioController {
     }
   }
 
+  @ApiBearerAuth()
   @Patch(':id/reativar')
   async enable(@Param() params: GetOneDto): Promise<IResponsePadrao<Usuario>> {
     try {
@@ -112,6 +116,7 @@ export class UsuarioController {
     }
   }
 
+  @ApiBearerAuth()
   @Put(':id')
   async update(
     @Param() params: GetOneDto,

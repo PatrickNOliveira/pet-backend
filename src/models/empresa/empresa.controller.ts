@@ -17,11 +17,13 @@ import { Empresa } from './empresa.entity';
 import { CreateEmpresaDto } from './dto/create.empresa.dto';
 import { GetOneDto } from '../../common/validators/get.one.dto';
 import { UpdateEmpresaDto } from './dto/update.empresa.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('empresa')
 export class EmpresaController {
   constructor(private readonly empresaService: EmpresaService) {}
 
+  @ApiBearerAuth()
   @Get()
   async getAll(
     @Query() query: FindAllParams,
@@ -44,6 +46,7 @@ export class EmpresaController {
     }
   }
 
+  @ApiBearerAuth()
   @Post()
   async store(
     @Body() body: CreateEmpresaDto,
@@ -55,6 +58,7 @@ export class EmpresaController {
     }
   }
 
+  @ApiBearerAuth()
   @Get(':id')
   async show(@Param() params: GetOneDto): Promise<IResponsePadrao<Empresa>> {
     try {
@@ -64,6 +68,7 @@ export class EmpresaController {
     }
   }
 
+  @ApiBearerAuth()
   @Delete(':id')
   async destroy(@Param() params: GetOneDto): Promise<IResponsePadrao<Empresa>> {
     try {
@@ -73,6 +78,7 @@ export class EmpresaController {
     }
   }
 
+  @ApiBearerAuth()
   @Put(':id')
   async update(
     @Param() params: GetOneDto,

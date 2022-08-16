@@ -7,7 +7,6 @@ import { JwtTokenInterface } from '../common/types/auth/jwt.token.interface';
 import { JwtPayloadInterface } from '../common/types/auth/jwt.payload.interface';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 
-//TODO: Criar testes unitários para auth.service
 @Injectable()
 export class AuthService {
   constructor(
@@ -28,23 +27,24 @@ export class AuthService {
 
   async login(user: any): Promise<JwtTokenInterface> {
     const payload: JwtPayloadInterface = {
+      id: user.id,
       email: user.email,
       nome: user.nome,
+      escopo: user.escopo,
     };
     const refresh_token = this.jwtService.sign(payload, {
       expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
       secret: process.env.JWT_REFRESH_TOKEN_SECRET,
     });
     const tokenEncoded = await argon.hash(refresh_token);
-    await this.usersService.updateRefreshToken(
-      tokenEncoded,
-      user.id,
-    );
+    await this.usersService.updateRefreshToken(tokenEncoded, user.id);
     return {
       access_token: this.jwtService.sign(payload),
       refresh_token,
       nome: user.nome,
-      email: '',
+      email: user.email,
+      escopo: user.escopo,
+      id: user.id,
     };
   }
 
@@ -84,13 +84,17 @@ export class AuthService {
         );
       });
     const payload: JwtPayloadInterface = {
+      id: user.id,
       email: user.email,
       nome: user.nome,
+      escopo: user.escopo,
     };
     return {
       access_token: this.jwtService.sign(payload),
       nome: user.nome,
       email: user.email,
+      escopo: user.escopo,
+      id: user.id,
     };
   }
 }
