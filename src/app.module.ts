@@ -6,8 +6,10 @@ import { ConfigModule } from '@nestjs/config';
 import { typeOrmAsyncConfig } from './config/typeorm.config';
 import { UsuarioModule } from './models/usuario/usuario.module';
 import { EmpresaModule } from './models/empresa/empresa.module';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { RelacionaUsuarioEmpresaModule } from './models/relaciona-usuario-empresa/relaciona-usuario-empresa.module';
+import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { RelacionaUsuarioEmpresaModule } from './models/relaciona-usuario-empres
     UsuarioModule,
     EmpresaModule,
     RelacionaUsuarioEmpresaModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
@@ -27,6 +30,10 @@ import { RelacionaUsuarioEmpresaModule } from './models/relaciona-usuario-empres
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
     },
   ],
 })

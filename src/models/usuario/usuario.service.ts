@@ -23,6 +23,13 @@ export class UsuarioService extends ServiceBase<Usuario> {
     super(usuarioRepository);
   }
 
+  public async findByEmail(email: string): Promise<Usuario> {
+    return await this.repository.findOne({
+      where: { email },
+      select: ['id', 'senha', 'nome', 'email', 'escopo'],
+    });
+  }
+
   override async store(
     body: CreateUsuarioDto,
   ): Promise<IResponsePadrao<Usuario>> {
@@ -212,5 +219,10 @@ export class UsuarioService extends ServiceBase<Usuario> {
       },
       HttpStatus.NOT_FOUND,
     );
+  }
+
+  async updateRefreshToken(refreshToken: string, id: string): Promise<Usuario> {
+    await this.repository.update({ id }, { refreshToken });
+    return await this.repository.findOne({ where: { id } });
   }
 }

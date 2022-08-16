@@ -17,6 +17,7 @@ import { Usuario } from './usuario.entity';
 import { GetOneDto } from '../../common/validators/get.one.dto';
 import { CreateUsuarioDto } from './dto/create.usuario.dto';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
+import { Public } from "../../auth/isPublic";
 
 @Controller('usuario')
 export class UsuarioController {
@@ -59,6 +60,7 @@ export class UsuarioController {
     }
   }
 
+  @Public()
   @Post()
   async store(
     @Body() body: CreateUsuarioDto,

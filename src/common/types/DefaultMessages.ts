@@ -11,4 +11,6 @@ export enum DefaultMessages {
   DATA_NOT_FOUND = 'Recurso não encontrado',
   DELETED = 'Deletado com sucesso.',
   UPDATED = 'Atualizado com sucesso.',
+  EMAIL_OR_PASS_INVALID = 'E-mail e/ou senha incorretos.',
+  TOKEN_NOT_FOUND = 'Token de autorização ausente ou inválido',
 }
