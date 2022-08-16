@@ -18,12 +18,15 @@ import { GetOneDto } from '../../common/validators/get.one.dto';
 import { CreateUsuarioDto } from './dto/create.usuario.dto';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Roles } from '../../authorization/roles.decorator';
+import { EscopoUsuario } from '../../common/types/EscopoUsuario';
 
 @Controller('usuario')
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
   @ApiBearerAuth()
+  @Roles([EscopoUsuario.AUDITOR_MASTER])
   @Get()
   async getAll(
     @Query() query: FindAllParams,
