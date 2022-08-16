@@ -4,6 +4,6 @@ import { RelacionaUsuarioEmpresaController } from './relaciona-usuario-empresa.c
 
 @Module({
   providers: [RelacionaUsuarioEmpresaService],
-  controllers: [RelacionaUsuarioEmpresaController]
+  controllers: [RelacionaUsuarioEmpresaController],
 })
 export class RelacionaUsuarioEmpresaModule {}

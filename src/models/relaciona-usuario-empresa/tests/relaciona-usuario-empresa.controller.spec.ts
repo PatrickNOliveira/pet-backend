@@ -9,7 +9,9 @@ describe('RelacionaUsuarioEmpresaController', () => {
       controllers: [RelacionaUsuarioEmpresaController],
     }).compile();
 
-    controller = module.get<RelacionaUsuarioEmpresaController>(RelacionaUsuarioEmpresaController);
+    controller = module.get<RelacionaUsuarioEmpresaController>(
+      RelacionaUsuarioEmpresaController,
+    );
   });
 
   it('should be defined', () => {

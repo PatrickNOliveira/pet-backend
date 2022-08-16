@@ -92,9 +92,12 @@ export class ServiceBase<T> {
     };
   }
 
-  async show(id: string): Promise<IResponsePadrao<T>> {
+  async show(id: string, include?: string[]): Promise<IResponsePadrao<T>> {
     await this.validateExists(id);
-    const data = await this.repository.findOne({ where: { id } });
+    const data = await this.repository.findOne({
+      where: { id },
+      relations: include ?? [],
+    });
     return {
       error: false,
       message: [DefaultMessages.QUERY_SUCCESS],

@@ -9,7 +9,9 @@ describe('RelacionaUsuarioEmpresaService', () => {
       providers: [RelacionaUsuarioEmpresaService],
     }).compile();
 
-    service = module.get<RelacionaUsuarioEmpresaService>(RelacionaUsuarioEmpresaService);
+    service = module.get<RelacionaUsuarioEmpresaService>(
+      RelacionaUsuarioEmpresaService,
+    );
   });
 
   it('should be defined', () => {

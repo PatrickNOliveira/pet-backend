@@ -8,6 +8,7 @@ import {
   IsString,
   IsUUID,
   Length,
+  ValidateIf,
 } from 'class-validator';
 import { DefaultMessages } from '../../../common/types/DefaultMessages';
 import { EscopoUsuario } from '../../../common/types/EscopoUsuario';
@@ -91,9 +92,20 @@ export class UpdateUsuarioDto {
   })
   refreshToken?: string;
 
-  @IsOptional()
+  @ApiProperty({ required: false })
+  @ValidateIf((o) => o.escopo === EscopoUsuario.GESTOR)
   @IsUUID(4, {
     message: 'empresaId deve ser um uuid',
   })
+  @IsOptional()
   empresaId: string;
+
+  @ApiProperty({ required: false })
+  @ValidateIf((o) => o.escopo === EscopoUsuario.CONSULTOR)
+  @IsUUID(4, {
+    message: 'empresasRelacionadas deve ser um array de uuids',
+    each: true,
+  })
+  @IsOptional()
+  empresasRelacionadas: string[];
 }

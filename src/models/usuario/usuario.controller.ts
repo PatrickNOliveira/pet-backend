@@ -20,9 +20,7 @@ import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 
 @Controller('usuario')
 export class UsuarioController {
-  constructor(
-    private readonly usuarioService: UsuarioService,
-  ) {}
+  constructor(private readonly usuarioService: UsuarioService) {}
 
   @Get()
   async getAll(
@@ -52,7 +50,10 @@ export class UsuarioController {
   @Get(':id')
   async show(@Param() params: GetOneDto): Promise<IResponsePadrao<Usuario>> {
     try {
-      return await this.usuarioService.show(params.id);
+      return await this.usuarioService.show(params.id, [
+        'empresaConsultorSGS',
+        'empresaGestorSGS',
+      ]);
     } catch (e) {
       tratamentoErroPadrao(e);
     }
@@ -115,22 +116,11 @@ export class UsuarioController {
     @Body() body: UpdateUsuarioDto,
   ): Promise<IResponsePadrao<Usuario>> {
     try {
-      return await this.usuarioService.update({
+      return await this.usuarioService.edit({
         condition: {
           id: params.id,
         },
         body,
-        validateUnique: true,
-        validateUniqueValues: [
-          {
-            value: body.email,
-            columnName: 'email',
-          },
-          {
-            value: body.login,
-            columnName: 'login',
-          },
-        ],
       });
     } catch (e) {
       tratamentoErroPadrao(e);

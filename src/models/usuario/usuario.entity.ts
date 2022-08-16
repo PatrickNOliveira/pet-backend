@@ -3,8 +3,10 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
-  JoinColumn, ManyToMany, JoinTable
-} from "typeorm";
+  JoinColumn,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { EscopoUsuario } from '../../common/types/EscopoUsuario';
 import { Empresa } from '../empresa/empresa.entity';
 
