@@ -1,14 +1,6 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { EscopoUsuario } from '../../common/types/EscopoUsuario';
-import { Empresa } from '../empresa/empresa.entity';
+import { TipoPessoa } from '../../common/types/TipoPessoa';
 
 @Entity('Usuarios')
 export class Usuario {
@@ -18,14 +10,11 @@ export class Usuario {
   @Column({ length: 254 })
   nome: string;
 
-  @Column({ length: 10 })
-  telefone: string;
+  @Column({ length: 254 })
+  sobrenome: string;
 
   @Column({ length: 254 })
   email: string;
-
-  @Column({ length: 254 })
-  login: string;
 
   @Column({ length: 254, select: false })
   senha: string;
@@ -36,32 +25,33 @@ export class Usuario {
   })
   escopo: EscopoUsuario;
 
-  @Column({ length: 254, nullable: true })
-  refreshToken?: string;
-
-  @Column({ default: true })
-  active: boolean;
-
-  @Column('uuid')
-  empresaId: string;
-
-  @ManyToOne(() => Empresa, (empresa) => empresa.usuarioGestorSGS, {
-    nullable: true,
+  @Column({
+    type: 'enum',
+    enum: TipoPessoa,
   })
-  @JoinColumn({ name: 'empresaId' })
-  empresaGestorSGS?: Empresa;
+  tipo: TipoPessoa;
 
-  @ManyToMany(() => Empresa)
-  @JoinTable({
-    name: 'RelacionaUsuarioEmpresa',
-    joinColumn: {
-      name: 'usuarioId',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'empresaId',
-      referencedColumnName: 'id',
-    },
-  })
-  empresaConsultorSGS?: Empresa[];
+  @Column()
+  nascimento: string;
+
+  @Column({ length: 14 })
+  cpfcnpj: string;
+
+  @Column({ length: 254 })
+  rg: string;
+
+  @Column({ length: 254 })
+  conjugue: string;
+
+  @Column({ length: 254 })
+  comoConheceu: string;
+
+  @Column({ length: 6 })
+  codigoRecuperarSenha?: string;
+
+  @Column()
+  codigoSenhaExpiracao: string;
+
+  @Column({ length: 254 })
+  mercadoPagoId: string;
 }

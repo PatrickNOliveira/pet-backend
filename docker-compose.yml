@@ -7,6 +7,7 @@ services:
       POSTGRES_PASSWORD: "root"
     ports:
       - "5432:5432"
+    container_name: database
     volumes:
       - /home/Grow-Desenvolvimento/Desenvolvimento/Docker-Compose/PostgreSQL:/var/lib/postgresql/data
     networks:

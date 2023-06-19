@@ -1,9 +1,4 @@
-import {
-  MigrationInterface,
-  QueryRunner,
-  Table,
-  TableForeignKey,
-} from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class CriaTabelaUsuarios1660248781902 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -25,18 +20,28 @@ export class CriaTabelaUsuarios1660248781902 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'telefone',
+            name: 'sobrenome',
             type: 'varchar',
             isNullable: false,
-            length: '11',
+          },
+          {
+            name: 'tipo',
+            type: 'enum',
+            enum: ['Pessoa física', 'Pessoa Jurídica'],
+          },
+          {
+            name: 'nascimento',
+            type: 'date',
+            isNullable: true,
+          },
+          {
+            name: 'cpfcnpj',
+            type: 'varchar',
+            length: '14',
+            isNullable: true,
           },
           {
             name: 'email',
-            type: 'varchar',
-            isNullable: false,
-          },
-          {
-            name: 'login',
             type: 'varchar',
             isNullable: false,
           },
@@ -46,47 +51,48 @@ export class CriaTabelaUsuarios1660248781902 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'escopo',
-            type: 'enum',
-            enum: ['GestorSGS', 'ConsultorSGS', 'AuditorMasterSGS'],
-          },
-          {
-            name: 'refreshToken',
+            name: 'rg',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'empresaId',
-            type: 'uuid',
+            name: 'conjugue',
+            type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'active',
-            type: 'boolean',
-            isNullable: false,
-            default: true,
+            name: 'comoConheceu',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'codigoRecuperarSenha',
+            type: 'char',
+            length: '6',
+            isNullable: true,
+          },
+          {
+            name: 'codigoSenhaExpiracao',
+            type: 'timestamp',
+            isNullable: true,
+          },
+          {
+            name: 'mercadoPagoId',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'escopo',
+            type: 'enum',
+            enum: ['Clinica', 'Cliente', 'Admin'],
           },
         ],
       }),
       true,
     );
-
-    await queryRunner.createForeignKey(
-      'Usuarios',
-      new TableForeignKey({
-        columnNames: ['empresaId'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'Empresas',
-      }),
-    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable('Usuarios');
-    const foreignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('empresaId') !== -1,
-    );
-    await queryRunner.dropForeignKey('Usuarios', foreignKey);
     await queryRunner.dropTable('Usuarios');
   }
 }

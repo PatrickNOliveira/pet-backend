@@ -1,5 +1,5 @@
 export enum EscopoUsuario {
-  GESTOR = 'GestorSGS',
-  CONSULTOR = 'ConsultorSGS',
-  AUDITOR_MASTER = 'AuditorMasterSGS',
+  CLINICA = 'Clinica',
+  CLIENTE = 'Cliente',
+  ADMIN = 'Admin',
 }

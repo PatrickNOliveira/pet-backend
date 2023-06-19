@@ -8,7 +8,6 @@ import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtRefreshStrategy } from './jwt-refresh-strategy';
 import { UsuarioModule } from '../models/usuario/usuario.module';
 import { AuthController } from './auth.controller';
 
@@ -32,7 +31,6 @@ import { AuthController } from './auth.controller';
     LocalStrategy,
     LocalAuthGuard,
     JwtStrategy,
-    JwtRefreshStrategy,
     JwtAuthGuard,
     {
       provide: APP_GUARD,
@@ -45,7 +43,6 @@ import { AuthController } from './auth.controller';
     LocalAuthGuard,
     JwtStrategy,
     JwtAuthGuard,
-    JwtRefreshStrategy,
   ],
 })
 export class AuthModule {}
