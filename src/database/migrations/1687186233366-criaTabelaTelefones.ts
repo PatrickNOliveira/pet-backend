@@ -20,7 +20,7 @@ export class criaTabelaTelefones1687186233366 implements MigrationInterface {
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'codigoRecuperarSenha',
+            name: 'ddd',
             type: 'char',
             length: '2',
             isNullable: false,
