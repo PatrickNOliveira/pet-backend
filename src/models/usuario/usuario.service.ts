@@ -4,7 +4,6 @@ import { Usuario } from './usuario.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IResponsePadrao } from '../../common/types/ResponsePadrao';
-import { EscopoUsuario } from '../../common/types/EscopoUsuario';
 import * as argon2 from 'argon2';
 import { CreateUsuarioDto } from './dto/create.usuario.dto';
 import { DefaultMessages } from '../../common/types/DefaultMessages';
@@ -36,37 +35,10 @@ export class UsuarioService extends ServiceBase<Usuario> {
       value: body.email,
       columnName: 'email',
     });
-    await this.validateUnique({
-      value: body.login,
-      columnName: 'login',
-    });
-
-    if (body.escopo !== EscopoUsuario.GESTOR && body.empresaId) {
-      throw new HttpException(
-        {
-          error: true,
-          message: `Apenas usuários do tipo ${EscopoUsuario.GESTOR} podem ter um empresaId`,
-          data: null,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    if (body.escopo !== EscopoUsuario.CONSULTOR && body.empresasRelacionadas) {
-      throw new HttpException(
-        {
-          error: true,
-          message: `Apenas usuários do tipo ${EscopoUsuario.CONSULTOR} podem ter empresas relacionadas`,
-          data: null,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const data = await this.repository.insert(body);
     const novoId = data.identifiers[0].id;
     const returnData = await this.repository.findOne({
       where: { id: novoId },
-      relations: ['empresaConsultorSGS'],
     });
     return {
       error: false,
@@ -94,19 +66,11 @@ export class UsuarioService extends ServiceBase<Usuario> {
       updating: true,
       condition: input.condition,
     });
-    await this.validateUnique({
-      value: input.body.login,
-      columnName: 'login',
-      updating: true,
-      condition: input.condition,
-    });
     const dadosEdicao = input.body;
-    delete dadosEdicao.empresasRelacionadas;
     const result = await this.repository.update(input.condition, dadosEdicao);
     if (result.affected > 0) {
       const data = await this.repository.findOne({
         where: input.condition as any,
-        relations: ['empresaConsultorSGS'],
       });
       return {
         error: false,
@@ -122,10 +86,5 @@ export class UsuarioService extends ServiceBase<Usuario> {
       },
       HttpStatus.NOT_FOUND,
     );
-  }
-
-  async updateRefreshToken(refreshToken: string, id: string): Promise<Usuario> {
-    await this.repository.update({ id }, { refreshToken });
-    return await this.repository.findOne({ where: { id } });
   }
 }

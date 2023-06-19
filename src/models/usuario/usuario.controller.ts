@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { FindAllParams } from '../../common/types/FindAllParams';
 import { IResponsePadrao } from '../../common/types/ResponsePadrao';
@@ -18,15 +9,12 @@ import { GetOneDto } from '../../common/validators/get.one.dto';
 import { CreateUsuarioDto } from './dto/create.usuario.dto';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { Roles } from '../../authorization/roles.decorator';
-import { EscopoUsuario } from '../../common/types/EscopoUsuario';
 
 @Controller('usuario')
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
   @ApiBearerAuth()
-  @Roles([EscopoUsuario.AUDITOR_MASTER])
   @Get()
   async getAll(
     @Query() query: FindAllParams,
@@ -72,48 +60,6 @@ export class UsuarioController {
   ): Promise<IResponsePadrao<Usuario>> {
     try {
       return await this.usuarioService.store(body);
-    } catch (e) {
-      tratamentoErroPadrao(e);
-    }
-  }
-
-  @ApiBearerAuth()
-  @Patch(':id/desativar')
-  async disable(@Param() params: GetOneDto): Promise<IResponsePadrao<Usuario>> {
-    try {
-      const response = await this.usuarioService.update({
-        condition: {
-          id: params.id,
-        },
-        body: {
-          active: false,
-        },
-      });
-      return {
-        ...response,
-        message: ['Desativado com sucesso.'],
-      };
-    } catch (e) {
-      tratamentoErroPadrao(e);
-    }
-  }
-
-  @ApiBearerAuth()
-  @Patch(':id/reativar')
-  async enable(@Param() params: GetOneDto): Promise<IResponsePadrao<Usuario>> {
-    try {
-      const response = await this.usuarioService.update({
-        condition: {
-          id: params.id,
-        },
-        body: {
-          active: true,
-        },
-      });
-      return {
-        ...response,
-        message: ['Reativado com sucesso.'],
-      };
     } catch (e) {
       tratamentoErroPadrao(e);
     }
