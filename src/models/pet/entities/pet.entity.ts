@@ -16,10 +16,10 @@ export class Pet {
   id: string;
 
   @Column()
-  numero: string;
+  nome: string;
 
   @Column({ type: 'date', nullable: true })
-  nascimento: Date;
+  nascimento: string;
 
   @Column()
   pelagem: string;
@@ -52,7 +52,7 @@ export class Pet {
   usuarioId: string;
 
   @ManyToOne(() => Usuario, (usuario) => usuario.pets)
-  @JoinColumn({ name: 'usuarioid' })
+  @JoinColumn({ name: 'usuarioId' })
   usuario: Usuario;
 
   @OneToMany(() => FotosPet, (e) => e.pet)

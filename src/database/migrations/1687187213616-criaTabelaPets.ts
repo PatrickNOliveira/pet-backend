@@ -20,7 +20,7 @@ export class criaTabelaPets1687187213616 implements MigrationInterface {
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'numero',
+            name: 'nome',
             type: 'varchar',
             isNullable: false,
           },
