@@ -12,6 +12,8 @@ import { FindConditions } from 'typeorm/find-options/FindConditions';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 import { ClinicaService } from '../clinica/clinica.service';
 import { EscopoUsuario } from '../../common/types/EscopoUsuario';
+import { TelefoneService } from '../telefone/telefone.service';
+import { EnderecoService } from '../endereco/endereco.service';
 
 @Injectable()
 export class UsuarioService extends ServiceBase<Usuario> {
@@ -19,6 +21,8 @@ export class UsuarioService extends ServiceBase<Usuario> {
     @InjectRepository(Usuario)
     private usuarioRepository: Repository<Usuario>,
     private clinicaService: ClinicaService,
+    private telefoneService: TelefoneService,
+    private enderecoService: EnderecoService,
   ) {
     super(usuarioRepository);
   }
@@ -30,9 +34,7 @@ export class UsuarioService extends ServiceBase<Usuario> {
     });
   }
 
-  override async store(
-    body: CreateUsuarioDto,
-  ): Promise<IResponsePadrao<Usuario>> {
+  async create(body: CreateUsuarioDto): Promise<IResponsePadrao<Usuario>> {
     await this.validateUnique({
       value: body.email,
       columnName: 'email',
@@ -46,9 +48,17 @@ export class UsuarioService extends ServiceBase<Usuario> {
         usuarioId: novoId,
       });
     }
+    if (body.escopo === EscopoUsuario.CLIENTE) {
+      for (const endereco of body.enderecos) {
+        await this.enderecoService.store({ ...endereco, usuarioId: novoId });
+      }
+      for (const telefone of body.telefones) {
+        await this.telefoneService.store({ ...telefone, usuarioId: novoId });
+      }
+    }
     const returnData = await this.repository.findOne({
       where: { id: novoId },
-      relations: ['clinicas'],
+      relations: ['clinicas', 'telefones', 'enderecos'],
     });
     return {
       error: false,

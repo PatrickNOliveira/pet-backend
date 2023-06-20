@@ -61,7 +61,7 @@ export class UsuarioController {
     @Body() body: CreateUsuarioDto,
   ): Promise<IResponsePadrao<Usuario>> {
     try {
-      return await this.usuarioService.store(body);
+      return await this.usuarioService.create(body);
     } catch (e) {
       tratamentoErroPadrao(e);
     }

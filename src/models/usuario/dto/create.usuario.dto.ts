@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  ArrayMinSize,
+  IsArray,
   IsEmail,
   IsIn,
   IsNotEmpty,
@@ -14,6 +16,8 @@ import { TipoPessoa } from '../../../common/types/TipoPessoa';
 import { EscopoUsuario } from '../../../common/types/EscopoUsuario';
 import { Type } from 'class-transformer';
 import { CreateClinicaDto } from '../../clinica/dto/create-clinica.dto';
+import { CreateTelefoneDto } from '../../telefone/dto/create-telefone.dto';
+import { CreateEnderecoDto } from '../../endereco/dto/create-endereco.dto';
 
 export class CreateUsuarioDto {
   id?: string;
@@ -112,4 +116,26 @@ export class CreateUsuarioDto {
   @ValidateNested()
   @Type(() => CreateClinicaDto)
   clinica: CreateClinicaDto;
+
+  @ValidateIf((o) => o.escopo === EscopoUsuario.CLIENTE)
+  @IsArray({
+    message: 'Campo telefones deve ser um array de telefones',
+  })
+  @ArrayMinSize(1, {
+    message: 'É obrigatório o envio de ao menos 1 telefone',
+  })
+  @ValidateNested({ each: true })
+  @Type(() => CreateTelefoneDto)
+  telefones: CreateTelefoneDto[];
+
+  @ValidateIf((o) => o.escopo === EscopoUsuario.CLIENTE)
+  @IsArray({
+    message: 'Campo enderecos deve ser um array de enderecos',
+  })
+  @ArrayMinSize(1, {
+    message: 'É obrigatório o envio de ao menos 1 endereco',
+  })
+  @ValidateNested({ each: true })
+  @Type(() => CreateEnderecoDto)
+  enderecos: CreateEnderecoDto[];
 }
