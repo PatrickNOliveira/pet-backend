@@ -10,10 +10,32 @@ import { CreateUsuarioDto } from './dto/create.usuario.dto';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Public } from '../../auth/isPublic';
+import { ForgotPasswordDto } from './dto/forgotPassword.dto';
+import { ResetPasswordDto } from './dto/resetPasswordDto';
 
 @Controller('usuario')
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
+
+  @Public()
+  @Post('/forgot-my-password')
+  async sendForgotPasswordMail(@Body() body: ForgotPasswordDto) {
+    try {
+      return this.usuarioService.sendForgotpasswordEmail(body.email);
+    } catch (error) {
+      return tratamentoErroPadrao(error);
+    }
+  }
+
+  @Public()
+  @Post('/reset-password')
+  async resetPassword(@Body() body: ResetPasswordDto) {
+    try {
+      return this.usuarioService.resetPassword(body);
+    } catch (error) {
+      return tratamentoErroPadrao(error);
+    }
+  }
 
   @ApiBearerAuth()
   @Get()

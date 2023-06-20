@@ -14,6 +14,10 @@ import { ClinicaService } from '../clinica/clinica.service';
 import { EscopoUsuario } from '../../common/types/EscopoUsuario';
 import { TelefoneService } from '../telefone/telefone.service';
 import { EnderecoService } from '../endereco/endereco.service';
+import { ForgotPasswordTemplate } from '../../common/templates/ForgotPassword.template';
+import { MailerService } from '@nestjs-modules/mailer';
+import * as moment from 'moment';
+import { ResetPasswordDto } from './dto/resetPasswordDto';
 
 @Injectable()
 export class UsuarioService extends ServiceBase<Usuario> {
@@ -23,8 +27,70 @@ export class UsuarioService extends ServiceBase<Usuario> {
     private clinicaService: ClinicaService,
     private telefoneService: TelefoneService,
     private enderecoService: EnderecoService,
+    private readonly mailerService: MailerService,
   ) {
     super(usuarioRepository);
+  }
+
+  async resetPassword({
+    token,
+    newPassword,
+    confirmNewPassword,
+  }: ResetPasswordDto): Promise<IResponsePadrao<Usuario>> {
+    if (newPassword !== confirmNewPassword) {
+      throw new HttpException(
+        {
+          error: true,
+          message: ['As senhas não conferem'],
+          data: null,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const userData = await this.repository.findOne({
+      where: { resetPasswordCode: token },
+    });
+
+    if (!userData) {
+      throw new HttpException(
+        {
+          error: true,
+          message: ['Token inválido'],
+          data: null,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const { id, codigoSenhaExpiracao } = userData;
+
+    const dateNow = moment();
+    const tokenExpirationTime = moment(codigoSenhaExpiracao).diff(
+      dateNow,
+      'minutes',
+    );
+
+    if (tokenExpirationTime <= 0) {
+      throw new HttpException(
+        {
+          error: true,
+          message: ['Token expirado'],
+          data: null,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const newPasswordHash = await argon2.hash(newPassword);
+    await this.repository.update(id, {
+      senha: newPasswordHash,
+    });
+
+    return {
+      error: false,
+      message: ['Senha atualizada com sucesso'],
+      data: null,
+    };
   }
 
   public async findByEmail(email: string): Promise<Usuario> {
@@ -67,6 +133,51 @@ export class UsuarioService extends ServiceBase<Usuario> {
     };
   }
 
+  public async sendForgotpasswordEmail(
+    email: string,
+  ): Promise<IResponsePadrao<Usuario>> {
+    const user = await this.findByEmail(email);
+
+    if (!user) {
+      throw new HttpException(
+        {
+          error: true,
+          message: ['E-mail não cadastrado'],
+          data: null,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const validationCode = this.generateRandomString(6);
+    const expirationDate = moment()
+      .add(3, 'hours')
+      .format('YYYY-MM-DD HH:mm:ss');
+    await this.update({
+      condition: { id: user.id },
+      body: {
+        codigoRecuperarSenha: validationCode,
+        codigoSenhaExpiracao: expirationDate,
+      },
+    });
+
+    await this.mailerService.sendMail({
+      to: email,
+      from: process.env.FORGOT_PASSWORD_SENDER,
+      subject: 'Recuperação de senha',
+      html: ForgotPasswordTemplate(
+        validationCode,
+        user.nome + ' ' + user.sobrenome,
+      ),
+    });
+
+    return {
+      error: false,
+      message: ['Token enviado para o email informado'],
+      data: null,
+    };
+  }
+
   async edit(input: {
     condition:
       | string
@@ -106,5 +217,16 @@ export class UsuarioService extends ServiceBase<Usuario> {
       },
       HttpStatus.NOT_FOUND,
     );
+  }
+
+  private generateRandomString(size: number): string {
+    let randomString = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    for (let i = 0; i < size; i++) {
+      randomString += characters.charAt(
+        Math.floor(Math.random() * characters.length),
+      );
+    }
+    return randomString;
   }
 }

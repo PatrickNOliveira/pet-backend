@@ -16,9 +16,33 @@ import { PetModule } from './models/pet/pet.module';
 import { FotosPetModule } from './models/fotos-pet/fotos-pet.module';
 import { PlanoClinicaModule } from './models/plano-clinica/plano-clinica.module';
 import { PlanoModule } from './models/plano/plano.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 
 @Module({
   imports: [
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.SMTP_DOMAIN,
+        port: process.env.SMTP_PORT,
+        ignoreTLS: true,
+        secure: true,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      },
+      defaults: {
+        from: 'noreply@growdesenvolvimento.com.br',
+      },
+      template: {
+        dir: __dirname + '/templates',
+        adapter: new EjsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
     ConfigModule.forRoot({
       envFilePath: ['.env'],
       isGlobal: true,
