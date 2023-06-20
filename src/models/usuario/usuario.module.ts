@@ -3,9 +3,10 @@ import { UsuarioController } from './usuario.controller';
 import { UsuarioService } from './usuario.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Usuario } from './usuario.entity';
+import { ClinicaModule } from '../clinica/clinica.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Usuario])],
+  imports: [TypeOrmModule.forFeature([Usuario]), ClinicaModule],
   controllers: [UsuarioController],
   providers: [UsuarioService],
   exports: [UsuarioService],

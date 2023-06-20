@@ -3,14 +3,17 @@ import {
   IsEmail,
   IsIn,
   IsNotEmpty,
+  IsNotEmptyObject,
   IsString,
   Length,
   ValidateIf,
+  ValidateNested,
 } from 'class-validator';
 import { DefaultMessages } from '../../../common/types/DefaultMessages';
 import { TipoPessoa } from '../../../common/types/TipoPessoa';
 import { EscopoUsuario } from '../../../common/types/EscopoUsuario';
 import { Type } from 'class-transformer';
+import { CreateClinicaDto } from '../../clinica/dto/create-clinica.dto';
 
 export class CreateUsuarioDto {
   id?: string;
@@ -92,7 +95,7 @@ export class CreateUsuarioDto {
 
   @ApiProperty()
   @IsNotEmpty({
-    message: 'Campo tipo é obrigatório',
+    message: 'Campo escopo é obrigatório',
   })
   @IsIn([EscopoUsuario.ADMIN, EscopoUsuario.CLIENTE, EscopoUsuario.CLINICA], {
     message: `O campo escopo deve ser ${EscopoUsuario.ADMIN} ou ${EscopoUsuario.CLIENTE} ou ${EscopoUsuario.CLINICA}`,
@@ -100,6 +103,13 @@ export class CreateUsuarioDto {
   escopo: EscopoUsuario;
 
   @ValidateIf((o) => o.escopo === EscopoUsuario.CLINICA)
-  /*@Type(() => CreateClinicaDto)*/
-  clinica: any;
+  @IsNotEmptyObject(
+    {},
+    {
+      message: 'O campo clinica é obrigatório em usuários do tipo Clinica',
+    },
+  )
+  @ValidateNested()
+  @Type(() => CreateClinicaDto)
+  clinica: CreateClinicaDto;
 }

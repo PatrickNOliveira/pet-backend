@@ -1,5 +1,11 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from 'typeorm';
-import {Usuario} from "../../usuario/usuario.entity";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { Usuario } from '../../usuario/usuario.entity';
 
 @Entity('Telefones')
 export class Telefone {

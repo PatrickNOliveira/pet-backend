@@ -1,6 +1,13 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany} from 'typeorm';
-import {Usuario} from "../../usuario/usuario.entity";
-import {PlanoClinica} from "../../plano-clinica/entities/plano-clinica.entity";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
+import { Usuario } from '../../usuario/usuario.entity';
+import { PlanoClinica } from '../../plano-clinica/entities/plano-clinica.entity';
 
 @Entity('Clinicas')
 export class Clinica {
@@ -59,7 +66,7 @@ export class Clinica {
   usuarioId: string;
 
   @ManyToOne(() => Usuario, (usuario) => usuario.clinicas)
-  @JoinColumn({ name: 'usuarioid' })
+  @JoinColumn({ name: 'usuarioId' })
   usuario: Usuario;
 
   @OneToMany(() => PlanoClinica, (e) => e.clinica)

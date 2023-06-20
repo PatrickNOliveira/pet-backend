@@ -10,12 +10,15 @@ import { DefaultMessages } from '../../common/types/DefaultMessages';
 import { ObjectID } from 'typeorm/driver/mongodb/typings';
 import { FindConditions } from 'typeorm/find-options/FindConditions';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
+import { ClinicaService } from '../clinica/clinica.service';
+import { EscopoUsuario } from '../../common/types/EscopoUsuario';
 
 @Injectable()
 export class UsuarioService extends ServiceBase<Usuario> {
   constructor(
     @InjectRepository(Usuario)
     private usuarioRepository: Repository<Usuario>,
+    private clinicaService: ClinicaService,
   ) {
     super(usuarioRepository);
   }
@@ -30,15 +33,22 @@ export class UsuarioService extends ServiceBase<Usuario> {
   override async store(
     body: CreateUsuarioDto,
   ): Promise<IResponsePadrao<Usuario>> {
-    body.senha = await argon2.hash(body.senha);
     await this.validateUnique({
       value: body.email,
       columnName: 'email',
     });
+    body.senha = await argon2.hash(body.senha);
     const data = await this.repository.insert(body);
     const novoId = data.identifiers[0].id;
+    if (body.escopo === EscopoUsuario.CLINICA) {
+      await this.clinicaService.store({
+        ...body.clinica,
+        usuarioId: novoId,
+      });
+    }
     const returnData = await this.repository.findOne({
       where: { id: novoId },
+      relations: ['clinicas'],
     });
     return {
       error: false,

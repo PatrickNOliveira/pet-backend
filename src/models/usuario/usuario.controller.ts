@@ -9,6 +9,7 @@ import { GetOneDto } from '../../common/validators/get.one.dto';
 import { CreateUsuarioDto } from './dto/create.usuario.dto';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Public } from '../../auth/isPublic';
 
 @Controller('usuario')
 export class UsuarioController {
@@ -55,6 +56,7 @@ export class UsuarioController {
 
   @ApiBearerAuth()
   @Post()
+  @Public()
   async store(
     @Body() body: CreateUsuarioDto,
   ): Promise<IResponsePadrao<Usuario>> {
