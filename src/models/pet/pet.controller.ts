@@ -3,10 +3,10 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Request,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { PetService } from './pet.service';
 import { CreatePetDto } from './dto/create-pet.dto';
@@ -46,20 +46,32 @@ export class PetController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.petService.show(id);
+    try {
+      return this.petService.show(id);
+    } catch (e) {
+      tratamentoErroPadrao(e);
+    }
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updatePetDto: UpdatePetDto) {
-    return this.petService.update({
-      condition: { id },
-      body: updatePetDto,
-    });
+    try {
+      return this.petService.update({
+        condition: { id },
+        body: updatePetDto,
+      });
+    } catch (e) {
+      tratamentoErroPadrao(e);
+    }
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.petService.destroy({ id });
+    try {
+      return this.petService.destroy({ id });
+    } catch (e) {
+      tratamentoErroPadrao(e);
+    }
   }
 
   private generateRandomString(size: number): string {

@@ -36,4 +36,4 @@ lerna-debug.log*
 
 .env
 
-.src/models/aws/files
+./src/models/aws/files/
