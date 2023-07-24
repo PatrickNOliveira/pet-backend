@@ -8,11 +8,12 @@ import { Usuario } from './usuario.entity';
 import { GetOneDto } from '../../common/validators/get.one.dto';
 import { CreateUsuarioDto } from './dto/create.usuario.dto';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
 import { Public } from '../../auth/isPublic';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 import { ResetPasswordDto } from './dto/resetPasswordDto';
 
+@ApiTags('Usuario')
 @Controller('usuario')
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
@@ -67,16 +68,12 @@ export class UsuarioController {
   @Get(':id')
   async show(@Param() params: GetOneDto): Promise<IResponsePadrao<Usuario>> {
     try {
-      return await this.usuarioService.show(params.id, [
-        'empresaConsultorSGS',
-        'empresaGestorSGS',
-      ]);
+      return await this.usuarioService.show(params.id);
     } catch (e) {
       tratamentoErroPadrao(e);
     }
   }
 
-  @ApiBearerAuth()
   @Post()
   @Public()
   async store(
